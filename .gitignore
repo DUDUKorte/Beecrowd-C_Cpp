@@ -1,6 +1,7 @@
 _*
 *.in
 ex_*
-*out
+*.out
 .vscode
 obi_*
+*.exe
