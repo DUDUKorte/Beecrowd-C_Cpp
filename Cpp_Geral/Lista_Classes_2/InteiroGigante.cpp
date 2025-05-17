@@ -3,16 +3,19 @@
 #include <iostream>
 using namespace std;
 
+#define MAX_SIZE 40
+
 class InteiroGigante{
+    public:
+    int iNumero[MAX_SIZE];
     private:
-    int iNumero[40];
     int iSize;
     
     private:
     void Resize(){
-        for(int i = 0; i < 40 ; i++){
+        for(int i = 0; i < MAX_SIZE ; i++){
             if(iNumero[i] != 0){
-                this->iSize = 40-i;
+                this->iSize = MAX_SIZE-i;
                 break;
             }
         }
@@ -20,7 +23,7 @@ class InteiroGigante{
     
     public:
     InteiroGigante(){
-        for(int i = 0; i < 40; i++){
+        for(int i = 0; i < MAX_SIZE; i++){
             iNumero[i] = 0;
         }
     }
@@ -28,9 +31,9 @@ class InteiroGigante{
     int ReadInteiroGigante(){
         string sEntrada; 
         cin >> sEntrada;
-        int iVectorPos = 40 - sEntrada.size();
+        int iVectorPos = MAX_SIZE - sEntrada.size();
         
-        if(sEntrada.size() > 40){
+        if(sEntrada.size() > MAX_SIZE){
             cout << "Número inválido" << endl;
             return 1;
         }
@@ -62,65 +65,67 @@ class InteiroGigante{
     //===========OPERATORS=============
     //=================================
 
-    int operator+(InteiroGigante c_B){
+    InteiroGigante operator+(InteiroGigante c_B){
         int iCarryIn = 0;
-        
-        //InteiroGigante *c_Maior = c_A->iSize > c_B->iSize ? c_A : c_B;
+        InteiroGigante c_C;
         
         for(int i = 39; i >= 0; i--){
             if(this->iNumero[i] + c_B.iNumero[i] + iCarryIn < 10){
-                this->iNumero[i] += c_B.iNumero[i] + iCarryIn;
+                c_C.iNumero[i] = this->iNumero[i] + c_B.iNumero[i] + iCarryIn;
                 iCarryIn = 0;
             }else{
-                this->iNumero[i] = (this->iNumero[i] + c_B.iNumero[i] + iCarryIn) - 10;
+                c_C.iNumero[i] = (this->iNumero[i] + c_B.iNumero[i] + iCarryIn) - 10;
                 iCarryIn = 1;
             }
         }
         
         if(iCarryIn){
             cout << "OVERFLOW" << endl;
-            return iCarryIn;
         }
         
-        Resize();
-        return iCarryIn;
+        c_C.Resize();
+        return c_C;
     }
 
-    int operator-(InteiroGigante c_Other){
-        // TODO: ARRUMAR RESULTADOS NEGATIVOS
+    void operator+=(InteiroGigante c_B){
+        InteiroGigante c_C = this->operator+(c_B);
+        for(int i = 0; i < 40; i++){
+            this->iNumero[i] = c_C.iNumero[i];
+        }
+    }
 
+    InteiroGigante operator-(InteiroGigante c_Other){
+        // TODO: ARRUMAR RESULTADOS NEGATIVOS
+        InteiroGigante c_C;
         int *iMaiorNumero, *iMenorNumero;
-        bool bNegative = false;
         if(this->operator>(c_Other)){
             iMaiorNumero = this->iNumero;
             iMenorNumero = c_Other.iNumero;
         }else{
-            iMaiorNumero = c_Other.iNumero;
-            iMenorNumero = this->iNumero;
-            bNegative = true;
+            cout << "OVEFLOW FROM HERE" << endl;
         }
 
 
-        for(int i = 39; i >= 0; i--){
+        for(int i = 39; i >= MAX_SIZE-this->iSize; i--){
             if(iMaiorNumero[i] < iMenorNumero[i] && i-1 >= 0){
                 iMaiorNumero[i-1] -= 1;
                 iMaiorNumero[i] += 10;
-                
-                cout << "1: " << iMaiorNumero[i] << " - 2: " << iMenorNumero[i] << " = " << iMaiorNumero[i] - iMenorNumero[i] << endl;
             }else if(i-1 < 0){
-                // OVERFLOW
+                cout << "OVERFLOW" << endl;
+                break;
             }
 
-            iMaiorNumero[i] = iMaiorNumero[i] - iMenorNumero[i];
+
+            c_C.iNumero[i] = iMaiorNumero[i] - iMenorNumero[i];
         }
 
-        Resize();
-        return 0;
+        c_C.Resize();
+        return c_C;
     }
 
     // return true if this is bigger than other
     bool operator>(InteiroGigante c_Other){
-        for(int i = 0; i < 40; i++){
+        for(int i = 0; i < MAX_SIZE; i++){
             if(iNumero[i] > c_Other.iNumero[i]){
                 return true;
             }else if(iNumero[i] < c_Other.iNumero[i]){
@@ -133,7 +138,7 @@ class InteiroGigante{
 
     // return true if this is less than other
     bool operator<(InteiroGigante c_Other){
-        for(int i = 0; i < 40; i++){
+        for(int i = 0; i < MAX_SIZE; i++){
             if(iNumero[i] < c_Other.iNumero[i]){
                 return true;
             }else if(iNumero[i] > c_Other.iNumero[i]){
@@ -145,7 +150,7 @@ class InteiroGigante{
 
     // return true if both are equal
     bool operator==(InteiroGigante c_Other){
-        for(int i = 0; i < 40; i++){
+        for(int i = 0; i < MAX_SIZE; i++){
             if(this->iNumero[i] != c_Other.iNumero[i]){
                 return false;
             }
@@ -178,13 +183,12 @@ int main(){
     InteiroGigante meuNumero;
     InteiroGigante meuNumero2;
     meuNumero.ReadInteiroGigante();
-    cout << "------------------------" << endl;
     meuNumero.PrintInteiroGigante();
     cout << "SIZE : " << meuNumero.GetSize() << endl;
     cout << "------------------------" << endl;
     meuNumero2.ReadInteiroGigante();
-    cout << "------------------------" << endl;
     meuNumero2.PrintInteiroGigante();
+    cout << "SIZE : " << meuNumero.GetSize() << endl;
     
     cout << "------------COMP<==>----------" << endl;
     if(meuNumero > meuNumero2){
@@ -202,11 +206,17 @@ int main(){
     }else if(meuNumero != meuNumero2){
         cout << "num1 é diferente de 2" << endl;
     }
+    cout << "------------COMP<==>----------" << endl << endl << endl << endl;
 
     cout << "------------SOMA------------" << endl;
-    //meuNumero + meuNumero2;
-    //meuNumero.PrintInteiroGigante();
+    InteiroGigante meuNumero3 = meuNumero + meuNumero2;
+    //meuNumero += meuNumero2;
+    meuNumero3.PrintInteiroGigante();
+    cout << "------------SOMA------------" << endl << endl;
+
+    
     cout << "----------SUBTRAÇÃO------------" << endl;
-    meuNumero - meuNumero2;
-    meuNumero.PrintInteiroGigante();
+    InteiroGigante meuNumero4 = meuNumero - meuNumero2;
+    meuNumero4.PrintInteiroGigante();
+    cout << "----------SUBTRAÇÃO------------" << endl << endl;
 }
