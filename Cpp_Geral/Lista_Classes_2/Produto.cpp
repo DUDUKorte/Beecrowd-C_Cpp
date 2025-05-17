@@ -1,25 +1,3 @@
-/*Crie uma classe chamada Produto que represente itens em um estoque de loja.
-Atributos privados:
-string nome
-int codigo
-int quantidade
-float preco
-Atributo static:
-static int totalProdutos; → contador de quantos objetos da classe foram criados.
-Requisitos:
-Construtor para inicializar todos os atributos.
-Métodos:
-void entradaEstoque(int qtd) → adiciona itens ao estoque
-bool saidaEstoque(int qtd) → remove itens, mas retorna false se não houver estoque suficiente
-float calcularValorTotal() → retorna o valor total do estoque do produto (quantidade × preço)
-static int getTotalProdutos() → retorna a quantidade total de produtos criados
-No programa principal:
-Crie três objetos Produto diferentes.
-Faça entradas e saídas de estoque em cada um.
-Exiba o valor total de cada item em estoque.
-Mostre quantos produtos foram criados ao final usando o método getTotalProdutos().
-*/
-
 #include <bits/stdc++.h>
 
 using namespace std;
